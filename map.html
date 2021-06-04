@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="referrer" content="no-referrer">
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" type="text/css">
+    <style>
+        html,
+        body,
+        #container {
+            height: 100%
+        }
+
+        .btn {
+            width: 6rem;
+            margin: 0 1rem 0 4.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <title>高新区规划图</title>
+
+    
+    
+    <script type="text/javascript">
+
+        window.init = function () {
+            var buildings = new AMap.Buildings({
+                'zooms': [16, 18],
+                'zIndex': 10,
+                'heightFactor': 2//2倍于默认高度，3D下有效
+            });//楼块图层 
+
+            var map = new AMap.Map('container', {
+                center: [112.9796765, 27.8368555],
+                viewMode: '2D',
+                pitch: 60,
+                rotation: 0,
+                //features: ['bg', 'road', 'point'],//隐藏默认楼块
+                mapStyle: 'amap://styles/light',
+                resizeEnable: true,
+                layers: [//使用多个图层
+                    new AMap.TileLayer,
+                    //new AMap.TileLayer.Satellite(),
+                    // new AMap.TileLayer.RoadNet(),
+
+                    buildings
+                ],
+                zoom: 14
+
+            });
+            AMap.plugin('AMap.DistrictSearch', function () {
+                // 创建行政区查询对象
+                var district = new AMap.DistrictSearch({
+                    // 返回行政区边界坐标等具体信息
+                    extensions: 'all',
+                    // 设置查询行政区级别为 区 
+                    level: 'district'
+                })
+
+                district.search('湘潭', function (status, result) {
+                    // 获取边界信息
+                    var bounds = result.districtList[0].boundaries
+                    var polygons = []
+                    if (bounds) {
+                        for (var i = 0, l = bounds.length; i < l; i++) {
+                            //生成行政区划polygon
+                            var polygon = new AMap.Polygon({
+                                map: map,
+                                strokeWeight: 1,
+                                path: bounds[i],
+                                fillOpacity: 0.7,
+                                fillColor: '#CCF3FF',
+                                fillOpacity: 0.15,
+                                strokeColor: '#CC66CC'
+                            })
+                            polygons.push(polygon)
+                        }
+                        // 地图自适应
+                        //map.setFitView()
+                    }
+                })
+                district.search('长沙', function (status, result) {
+                    // 获取边界信息
+                    var bounds = result.districtList[0].boundaries
+                    var polygons = []
+                    if (bounds) {
+                        for (var i = 0, l = bounds.length; i < l; i++) {
+                            //生成行政区划polygon
+                            var polygon = new AMap.Polygon({
+                                map: map,
+                                strokeWeight: 1,
+                                path: bounds[i],
+                                fillOpacity: 0.7,
+                                fillColor: '#CCF3FF',
+                                fillOpacity: 0.35,
+                                strokeColor: '#CC66CC'
+                            })
+                            polygons.push(polygon)
+                        }
+                        // 地图自适应
+                        //map.setFitView()
+                    }
+                })
+                district.search('株洲', function (status, result) {
+                    // 获取边界信息
+                    var bounds = result.districtList[0].boundaries
+                    var polygons = []
+                    if (bounds) {
+                        for (var i = 0, l = bounds.length; i < l; i++) {
+                            //生成行政区划polygon
+                            var polygon = new AMap.Polygon({
+                                map: map,
+                                strokeWeight: 1,
+                                path: bounds[i],
+                                fillOpacity: 0.7,
+                                fillColor: '#CCF3FF',
+                                fillOpacity: 0.35,
+                                strokeColor: '#CC66CC'
+                            })
+                            polygons.push(polygon)
+                        }
+                        // 地图自适应
+                        //map.setFitView()
+                    }
+                })
+
+
+            })
+
+
+            var trafficLayer = new AMap.TileLayer.Traffic({
+                zIndex: 10
+            });
+            //map.add(trafficLayer);
+            var imageLayer = new AMap.ImageLayer({
+                bounds: new AMap.Bounds(112.924825, 27.799044, 113.034528, 27.874667),//AMap.LngLat(112.915825, 27.804044,),AMap.LngLat(113.043528, 27.890667,)),
+                //url: 'xtgx1.png', // 图片 Url
+                url:'https://raw.githubusercontent.com/bo7882132/docs-zh/master/xtgx1.png',
+                zIndex: 2,
+                zooms: [3, 18] // 设置可见级别，[最小级别，最大级别]
+            });
+
+            // 将图层添加至地图实例
+            map.add(imageLayer);
+
+
+
+            //var marker = new AMap.Marker({  
+            //    position: [112.946281, 27.829272]//标记点位置
+            //})
+            //map.add(marker);//添加到地图
+            AMap.plugin('AMap.DistrictSearch', function () {
+                var districtSearch = new AMap.DistrictSearch({
+                    // 关键字对应的行政区级别，country表示国家
+                    level: 'country',
+                    //  显示下级行政区级数，1表示返回下一级行政区
+                    subdistrict: 1
+                })
+
+                // 搜索所有省/直辖市信息
+                districtSearch.search('中国', function (status, result) {
+                    // 查询成功时，result即为对应的行政区信息
+                })
+            })
+
+
+
+
+
+
+        }
+
+
+
+    </script>
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=4dc6aee87b62bd5545fd3f27d9f14b85&callback=init"></script>
+
+    <div id="container"></div>
+    
+</body>
+
+</html>
